@@ -123,8 +123,8 @@ const SmartUploader = ({ onUploadSuccess }) => {
       setUploadState('signing');
       setProgress(40);
       
-      // Get Firebase ID token
-      const idToken = await user.getIdToken();
+      // Get auth token
+      const idToken = user.token;
       
       // Fetch signature from our serverless function
       const signRes = await fetch('/api/sign-upload', {

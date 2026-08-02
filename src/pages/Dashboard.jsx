@@ -39,7 +39,7 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center gap-3 pl-6 border-l border-zinc-800">
-              <span className="text-sm text-zinc-400 hidden md:block">{user?.email}</span>
+              <span className="text-sm text-zinc-400 hidden md:block">Admin</span>
               <button 
                 onClick={logout}
                 className="text-xs font-medium bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-4 py-2 rounded-lg border border-zinc-800 transition-colors"

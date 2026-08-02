@@ -44,7 +44,7 @@ const MediaManager = ({ cloudName }) => {
   const handleDelete = async (publicId) => {
     try {
       setIsDeleting(true);
-      const idToken = await user.getIdToken();
+      const idToken = user.token;
       
       const res = await fetch('/api/delete-image', {
         method: 'POST',
