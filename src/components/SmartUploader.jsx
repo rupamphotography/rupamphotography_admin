@@ -3,8 +3,12 @@ import { UploadCloud, CheckCircle, XCircle, FileImage, Loader } from 'lucide-rea
 import { compressImage } from '../utils/compressImage';
 import { useAuth } from '../hooks/useAuth';
 
-const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
-const CATEGORIES = ['wedding', 'bridal', 'fashion', 'portrait', 'nature', 'street'];
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const CATEGORIES = [
+  'wedding', 'bridal', 'fashion', 'portrait', 'nature', 'street', 
+  'hero', 'about', 'wedding_header', 'bridal_header', 
+  'fashion_header', 'portrait_header', 'nature_header', 'street_header'
+];
 
 const SmartUploader = ({ onUploadSuccess }) => {
   const { user } = useAuth();
@@ -23,7 +27,7 @@ const SmartUploader = ({ onUploadSuccess }) => {
   const fileInputRef = useRef(null);
 
   const fetchCategoryStats = useCallback(async (force = false) => {
-    const cacheKey = `cloudinary_stats_${category}`;
+    const cacheKey = `cloudinary_stats_v2_${category}`;
     
     if (!force) {
       const cached = sessionStorage.getItem(cacheKey);
@@ -86,7 +90,7 @@ const SmartUploader = ({ onUploadSuccess }) => {
     }
     
     if (selectedFile.size > MAX_FILE_SIZE) {
-      setErrorMsg('File exceeds 15MB maximum size limit.');
+      setErrorMsg('File exceeds 1MB maximum size limit.');
       return;
     }
     
@@ -126,14 +130,24 @@ const SmartUploader = ({ onUploadSuccess }) => {
       // Get auth token
       const idToken = user.token;
       
-      // Fetch signature from our serverless function
+      // 1. Add this list of tags that should only have 1 image
+      const singleImageCategories = [
+        'hero', 'about', 'wedding_header', 'bridal_header', 
+        'fashion_header', 'portrait_header', 'nature_header', 'street_header'
+      ];
+      
+      const isSingleImage = singleImageCategories.includes(category);
+      const public_id = isSingleImage ? `${category}_image` : undefined;
+      const overwrite = isSingleImage ? true : undefined;
+
+      // 2. Pass them to your signing API
       const signRes = await fetch('/api/sign-upload', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`
         },
-        body: JSON.stringify({ category })
+        body: JSON.stringify({ category, public_id, overwrite }) // Added new fields
       });
       
       if (!signRes.ok) {
@@ -152,6 +166,14 @@ const SmartUploader = ({ onUploadSuccess }) => {
       formData.append('signature', signature);
       formData.append('folder', 'portfolio');
       formData.append('tags', `portfolio,${category}`);
+      
+      // NEW: Append to formData
+      if (public_id) {
+        formData.append('public_id', public_id);
+      }
+      if (overwrite) {
+        formData.append('overwrite', overwrite);
+      }
       
       await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -183,7 +205,7 @@ const SmartUploader = ({ onUploadSuccess }) => {
       
       setCategoryStats(prev => {
         const newStats = { ...prev, count: prev.count + 1 };
-        sessionStorage.setItem(`cloudinary_stats_${category}`, JSON.stringify(newStats));
+        sessionStorage.setItem(`cloudinary_stats_v2_${category}`, JSON.stringify(newStats));
         return newStats;
       });
       
@@ -251,7 +273,7 @@ const SmartUploader = ({ onUploadSuccess }) => {
             </div>
             <p className="text-zinc-200 font-medium">Drag & Drop Master File or Browse</p>
             <span className="inline-block mt-2 px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-full text-xs text-zinc-400">
-              Max 15MB • WebP, JPEG, PNG
+              Max 1MB • WebP, JPEG, PNG
             </span>
           </>
         )}

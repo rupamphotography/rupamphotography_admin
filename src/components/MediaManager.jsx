@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Trash2, ExternalLink, RefreshCw, AlertTriangle, X, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
-const CATEGORIES = ['all', 'wedding', 'bridal', 'fashion', 'portrait', 'nature', 'street'];
+const CATEGORIES = [
+  'all', 'wedding', 'bridal', 'fashion', 'portrait', 'nature', 'street',
+  'hero', 'about', 'wedding_header', 'bridal_header', 
+  'fashion_header', 'portrait_header', 'nature_header', 'street_header'
+];
 
 const MediaManager = ({ cloudName }) => {
   const { user } = useAuth();

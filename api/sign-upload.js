@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     jwt.verify(token, jwtSecret);
     
     const timestamp = Math.round((new Date()).getTime() / 1000);
-    const { category } = req.body || {};
+    const { category, public_id, overwrite } = req.body || {};
     
     const paramsToSign = {
       timestamp: timestamp,
@@ -40,6 +40,14 @@ export default async function handler(req, res) {
     
     if (category) {
       paramsToSign.tags = `portfolio,${category}`;
+    }
+    
+    // NEW: Sign public_id and overwrite if they are passed
+    if (public_id) {
+      paramsToSign.public_id = public_id;
+    }
+    if (overwrite !== undefined) {
+      paramsToSign.overwrite = overwrite;
     }
 
     const signature = cloudinary.utils.api_sign_request(

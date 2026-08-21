@@ -26,17 +26,20 @@ export default async function handler(req, res) {
 
   // Define how many images to fetch per category
   const CATEGORY_LIMITS = {
-    portfolio: 10, // 'All' category
-    wedding: 10,
-    bridal: 10,
-    fashion: 10,
-    portrait: 10,
-    nature: 10,
-    street: 10
+    portfolio: 8, // 'All' category
+    wedding: 8,
+    bridal: 8,
+    fashion: 8,
+    portrait: 8,
+    nature: 8,
+    street: 8
   };
 
-  // Default to 15 if the category isn't in the list
-  const maxResults = CATEGORY_LIMITS[tagToFetch] || 15;
+  // Default to 8 if the category isn't in the list
+  let maxResults = CATEGORY_LIMITS[tagToFetch] || 8;
+  if (tagToFetch.endsWith('_header') || tagToFetch === 'hero' || tagToFetch === 'about') {
+    maxResults = 1;
+  }
 
   try {
     const result = await cloudinary.api.resources_by_tag(tagToFetch, {
