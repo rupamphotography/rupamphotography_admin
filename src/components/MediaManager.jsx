@@ -63,6 +63,13 @@ const MediaManager = ({ cloudName }) => {
         throw new Error('Deletion failed');
       }
       
+      // Clear cache to ensure counts in SmartUploader are fresh
+      Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('cloudinary_stats_v2_')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+      
       // Update local state without fetching again
       setImages(prev => prev.filter(img => img.public_id !== publicId));
       window.dispatchEvent(new Event('mediaUpdated'));
@@ -97,7 +104,13 @@ const MediaManager = ({ cloudName }) => {
         </div>
         
         <button 
-          onClick={fetchImages}
+          onClick={() => {
+            Object.keys(sessionStorage).forEach(key => {
+              if (key.startsWith('cloudinary_stats_v2_')) sessionStorage.removeItem(key);
+            });
+            fetchImages();
+            window.dispatchEvent(new Event('mediaUpdated'));
+          }}
           className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-200 transition-colors bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800"
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
