@@ -11,6 +11,7 @@ To get this project running locally on your machine, follow these steps:
    git clone <repository-url>
    cd photographywebadmin
    ```
+   
 
 2. **Install dependencies**
    ```bash
