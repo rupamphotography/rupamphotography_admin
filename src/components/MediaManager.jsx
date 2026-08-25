@@ -132,7 +132,7 @@ const MediaManager = ({ cloudName }) => {
           {images.map((img) => (
             <div key={img.public_id} className="group relative aspect-[4/5] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
               <img 
-                src={`https://res.cloudinary.com/${cloudName}/image/upload/c_fill,w_400,h_500,q_auto/${img.public_id}.${img.format}`}
+                src={`https://res.cloudinary.com/${cloudName}/image/upload/c_fill,w_400,h_500,q_auto/v${img.version || 1}/${img.public_id}.${img.format}`}
                 alt={img.public_id}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
@@ -147,7 +147,7 @@ const MediaManager = ({ cloudName }) => {
                 
                 <div className="flex justify-between items-center mt-4">
                   <a 
-                    href={`https://res.cloudinary.com/${cloudName}/image/upload/${img.public_id}.${img.format}`}
+                    href={`https://res.cloudinary.com/${cloudName}/image/upload/v${img.version || 1}/${img.public_id}.${img.format}`}
                     target="_blank" 
                     rel="noreferrer"
                     className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors"
