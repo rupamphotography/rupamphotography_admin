@@ -45,6 +45,9 @@ export default async function handler(req, res) {
     // NEW: Sign public_id and overwrite if they are passed
     if (public_id) {
       paramsToSign.public_id = public_id;
+    } else {
+      paramsToSign.use_filename = 'true';
+      paramsToSign.unique_filename = 'false';
     }
     if (overwrite !== undefined) {
       paramsToSign.overwrite = overwrite;
