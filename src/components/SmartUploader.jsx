@@ -170,6 +170,9 @@ const SmartUploader = ({ onUploadSuccess }) => {
       // NEW: Append to formData
       if (public_id) {
         formData.append('public_id', public_id);
+      } else {
+        formData.append('use_filename', 'true');
+        formData.append('unique_filename', 'false');
       }
       if (overwrite) {
         formData.append('overwrite', overwrite);
